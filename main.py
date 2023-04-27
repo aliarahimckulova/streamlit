@@ -1,7 +1,7 @@
 # streamlit_app.py
 
 import streamlit as st
-from google.oauth2.service_account import Credentials
+from google.oauth2 import service_account
 from gsheetsdb import connect
 
 # Create a connection object.
