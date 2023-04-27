@@ -1,3 +1,4 @@
 gsheetsdb==0.1.13
 plotly==5.14.1
 google-oauth==1.0.1
+pyparsing==3.0.9
