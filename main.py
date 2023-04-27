@@ -1,7 +1,7 @@
 # streamlit_app.py
 
 import streamlit as st
-from google.oauth2 import service_account
+from google.oauth2.service_account import Credentials
 from gsheetsdb import connect
 
 # Create a connection object.
@@ -27,3 +27,4 @@ rows = run_query(f'SELECT * FROM "{sheet_url}"')
 # Print results.
 for row in rows:
     st.write(f"{row.name} has a :{row.pet}:")
+    
