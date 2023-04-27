@@ -1,0 +1,2 @@
+gsheetsdb==0.1.13
+plotly==5.14.1
