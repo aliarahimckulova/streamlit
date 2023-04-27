@@ -1,23 +1,29 @@
-import pandas as pd
+# streamlit_app.py
+
 import streamlit as st
-import plotly.graph_objects as go
+from google.oauth2 import service_account
+from gsheetsdb import connect
 
-# Load data
-df = pd.read_csv('C:/Users/aliar/OneDrive/Рабочий стол/stream/Sustainable Lifestyle Questionnaire for App.csv')
+# Create a connection object.
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+    ],
+)
+conn = connect(credentials=credentials)
 
-# Extract main columns
-df_main = df.iloc[:, 3:-3]
+# Perform SQL query on the Google Sheet.
+# Uses st.cache_data to only rerun when the query changes or after 10 min.
+@st.cache_data(ttl=600)
+def run_query(query):
+    rows = conn.execute(query, headers=1)
+    rows = rows.fetchall()
+    return rows
 
-st.title("**♻️**Explore questionnare dashboard")
-st.write("Here, you can see the demo of a simple web-app dashboard."
-         "It will show you general information such as users answers for a specific ")
+sheet_url = st.secrets["private_gsheets_url"]
+rows = run_query(f'SELECT * FROM "{sheet_url}"')
 
-if st.checkbox('Show data'):
-    st.write(df_main)
-st.title("How many people are interested in environmental issues?")
-values = df_main['Would you like to know more about environmental issues?'].value_counts()
-keys = df_main['Would you like to know more about environmental issues?'].unique()
-
-fig = go.Figure(go.Pie(values=values, labels=keys, hole=0.3))
-
-st.plotly_chart(fig)
+# Print results.
+for row in rows:
+    st.write(f"{row.name} has a :{row.pet}:")
