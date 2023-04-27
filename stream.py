@@ -3,7 +3,7 @@ import streamlit as st
 import plotly.graph_objects as go
 
 # Load data
-df = pd.read_csv('C:/Users/aliar/OneDrive/Рабочий стол/stream/Sustainable Lifestyle Questionnaire for App.csv')
+df = pd.read_csv('Sustainable Lifestyle Questionnaire for App.csv')
 
 # Extract main columns
 df_main = df.iloc[:, 3:-3]
