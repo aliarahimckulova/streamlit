@@ -20,7 +20,7 @@ df = df.drop(columns=['Отметка времени'])
 
 st.title("What environmental issues do you think are the most important?")
 question = st.selectbox("What environmental issues do you think are the most important?", df.columns)
-answers = df[question].str.split(",")
+answers = df[question].str.split(", ")
 answer_counts = pd.Series(sum(answers, [])).value_counts().sort_values(ascending=True)
 #fig = go.Figure(go.Bar(x=answer_counts.index, y=answer_counts.values, orientation='h'))
 fig = go.Figure()
@@ -38,7 +38,7 @@ st.plotly_chart(fig)
 
 st.title("Where do you get information about the current environmental situation?")
 question = st.selectbox("Where do you get information about the current environmental situation?", df.columns)
-answers = df[question].str.split(",")
+answers = df[question].str.split(", ")
 answer_counts = pd.Series(sum(answers, [])).value_counts().sort_values(ascending=True)
 #fig = go.Figure(go.Bar(x=answer_counts.index, y=answer_counts.values, orientation='h'))
 fig = go.Figure()
@@ -57,17 +57,21 @@ st.plotly_chart(fig)
 
 st.title("Do you lead an eco-friendly lifestyle?")
 question = st.selectbox("Do you lead an eco-friendly lifestyle?", df.columns)
-answers = df[question].str.split(",")
-answer_counts = pd.Series(sum(answers, [])).value_counts().sort_values(ascending=True)
+answers = df[question].dropna()
+answer_counts = answers.value_counts().sort_values(ascending=True)
 fig = go.Figure(go.Pie(values=answer_counts.values, labels=answer_counts.index))
 fig.update_layout(title=f"Number of selected answers for '{question}'")
 st.plotly_chart(fig)
 
+import re
+
 st.title("What is the main motivation for you to lead an ecological lifestyle?")
 question = st.selectbox("What is the main motivation for you to lead an ecological lifestyle?", df.columns)
-answers = df[question].str.split(",")
-answer_counts = pd.Series(sum(answers, [])).value_counts().sort_values(ascending=True)
-#fig = go.Figure(go.Bar(x=answer_counts.index, y=answer_counts.values, orientation='h'))
+answers = df[question].apply(lambda x: re.split(''',(?=(?:[^'"]|'[^']*'|"[^"]*")*$)''', x))
+answer_counts = pd.Series()
+for ans in answers:
+    answer_counts = answer_counts.add(pd.Series(ans).value_counts(), fill_value=0)
+answer_counts = answer_counts.sort_values(ascending=True)
 fig = go.Figure()
 fig.add_trace(go.Bar(x=answer_counts.values,
                      y=answer_counts.index,
@@ -76,10 +80,11 @@ fig.add_trace(go.Bar(x=answer_counts.values,
                      textposition='outside',
                      marker=dict(color='rgba(50, 171, 96, 0.6)',
                                  line=dict(color='rgba(50, 171, 96, 1.0)', width=1))))
-fig.update_layout(title=f"Number of selected answers for {'What is the main motivation for you to lead an ecological lifestyle?'}",
+fig.update_layout(title=f"Number of selected answers for '{question}'",
                   xaxis_title="Answer",
                   yaxis_title="Count")
 st.plotly_chart(fig)
+
 
 st.title("What aspects of maintaining an ecological lifestyle are the most difficult for you?")
 question = st.selectbox("What aspects of maintaining an ecological lifestyle are the most difficult for you?", df.columns)
@@ -151,11 +156,12 @@ st.plotly_chart(fig)
 
 st.title("Have you reduced your meat consumption or adopted a vegetarian/vegan diet?")
 question = st.selectbox("Have you reduced your meat consumption or adopted a vegetarian/vegan diet?", df.columns)
-answers = df[question].str.split(",")
-answer_counts = pd.Series(sum(answers, [])).value_counts().sort_values(ascending=True)
+answers = df[question].dropna()
+answer_counts = answers.value_counts().sort_values(ascending=True)
 fig = go.Figure(go.Pie(values=answer_counts.values, labels=answer_counts.index))
 fig.update_layout(title=f"Number of selected answers for '{question}'")
 st.plotly_chart(fig)
+
 
 st.title("Do you compost your food waste or use a composting service?")
 question = st.selectbox("Do you compost your food waste or use a composting service?", df.columns)
@@ -167,8 +173,8 @@ st.plotly_chart(fig)
 
 st.title("Have you taken any steps to reduce your overall consumption, such as by buying fewer new products or participating in a buy nothing challenge?")
 question = st.selectbox("Have you taken any steps to reduce your overall consumption, such as by buying fewer new products or participating in a buy nothing challenge?", df.columns)
-answers = df[question].str.split(",")
-answer_counts = pd.Series(sum(answers, [])).value_counts().sort_values(ascending=True)
+answers = df[question].dropna()
+answer_counts = answers.value_counts().sort_values(ascending=True)
 fig = go.Figure(go.Pie(values=answer_counts.values, labels=answer_counts.index))
 fig.update_layout(title=f"Number of selected answers for '{question}'")
 st.plotly_chart(fig)
