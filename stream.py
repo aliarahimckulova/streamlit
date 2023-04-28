@@ -14,13 +14,8 @@ st.write("Here, you can see the demo of a simple web-app dashboard."
 
 if st.checkbox('Show data'):
     st.write(df_main)
-st.title("How many people are interested in environmental issues?")
-values = df_main['Would you like to know more about environmental issues?'].value_counts()
-keys = df_main['Would you like to know more about environmental issues?'].unique()
 
-fig = go.Figure(go.Pie(values=values, labels=keys, hole=0.3))
 
-st.plotly_chart(fig)
 df = df.drop(columns=['Отметка времени'])
 
 st.title("What environmental issues do you think are the most important?")
@@ -186,3 +181,8 @@ fig = go.Figure(go.Pie(values=answer_counts.values, labels=answer_counts.index))
 fig.update_layout(title=f"Number of selected answers for '{question}'")
 st.plotly_chart(fig)
 
+st.title("Would you like to know more about environmental issues?")
+values = df_main['Would you like to know more about environmental issues?'].value_counts()
+keys = df_main['Would you like to know more about environmental issues?'].unique()
+fig = go.Figure(go.Pie(values=values, labels=keys, hole=0.3, name="Count of answers"))
+st.plotly_chart(fig)
