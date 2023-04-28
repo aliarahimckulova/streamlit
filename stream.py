@@ -106,7 +106,7 @@ st.plotly_chart(fig)
 
 st.title("Which of the following ideas do you think are the most useful?")
 question = st.selectbox("Which of the following ideas do you think are the most useful?", df.columns)
-answers = df[question].str.split(",")
+answers = df[question].str.split(", ")
 answer_counts = pd.Series(sum(answers, [])).value_counts().sort_values(ascending=True)
 #fig = go.Figure(go.Bar(x=answer_counts.index, y=answer_counts.values, orientation='h'))
 fig = go.Figure()
@@ -121,6 +121,7 @@ fig.update_layout(title=f"Number of selected answers for {'Which of the followin
                   xaxis_title="Answer",
                   yaxis_title="Count")
 st.plotly_chart(fig)
+
 st.title("How often do you recycle?")
 question = st.selectbox("How often do you recycle?", df.columns)
 answers = df[question].str.split(",")
@@ -192,3 +193,8 @@ values = df_main['Would you like to know more about environmental issues?'].valu
 keys = df_main['Would you like to know more about environmental issues?'].unique()
 fig = go.Figure(go.Pie(values=values, labels=keys, hole=0.3, name="Count of answers"))
 st.plotly_chart(fig)
+
+st.title("Open questions")
+df_open = df.iloc[:, -3:]
+if st.checkbox('Open questions'):
+    st.write(df_open)
